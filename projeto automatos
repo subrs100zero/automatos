@@ -1,0 +1,102 @@
+#include <stdio.h>
+#define LIN 51
+
+typedef enum {
+    q0, q1, q2, q3, q4, q5, q6, q7, q8
+} Est;
+
+void func(Est estAtual, char simb, char *est_interm) {
+    switch (estAtual) {
+        case q0:
+            if (simb == '0'){ 
+                est_interm[q1] = 1;
+            }
+            break;
+        case q1:
+            if (simb == '1'){ 
+                est_interm[q2] = 1;
+            }
+            break;
+        case q2:
+            if (simb == '1'){ 
+                est_interm[q3] = 1;
+                est_interm[q0] = 1;
+            }
+            break;
+        case q3:
+            if (simb == '1'){ 
+                est_interm[q4] = 1;
+            }
+            break;
+        case q4:
+            if (simb == '0'){ 
+                est_interm[q0] = 1;
+            }
+            break;
+        case q5:
+            if (simb == '1'){ 
+                est_interm[q6] = 1;
+            }
+            break;
+        case q6:
+            if (simb == '0'){ 
+                est_interm[q5] = 1;
+                est_interm[q7] = 1;
+            }
+            break;
+        case q7:
+            if (simb == '0'){ 
+                est_interm[q8] = 1;
+            }
+            break;
+        case q8:
+            if (simb == '1'){ 
+                est_interm[q5] = 1;
+            }
+            break;
+    }
+}
+
+void trans(char *est_atual, char *est_interm, char simb){
+    printf("%c", simb);
+    int i;
+    if(est_atual[q0] == 1){
+        est_atual[q5] = 1;
+    }
+    for(i = 0; i <= 8; i++){
+       est_interm[i] = 0;
+    }    
+    for(i = 0; i <= 8; i++){
+        if(est_atual[i] == 1){
+            func(i,simb,est_interm);
+        }
+    } 
+    for(i = 0; i <= 8; i++){
+        est_atual[i] = est_interm[i];
+    }
+}
+
+char est_atual[9] = {0};
+char est_interm[9];
+
+int main() {
+    int i;
+    est_atual[q0] = 1;
+    char L[LIN];
+    fgets(L, LIN, stdin);
+    for (i = 0; L[i] != '\0'; i++) {
+        if (L[i] == '\n') {
+            L[i] = '\0';
+            break;
+        }
+    }
+    for(i = 0; L[i] != '\0'; i++){
+        trans(est_atual,est_interm,L[i]);
+    } 
+    if (est_atual[q0] == 1 || est_atual[q5] == 1){
+        printf("sim\n");
+    } else {
+        printf("nao\n");
+    }
+    return 0;
+}
